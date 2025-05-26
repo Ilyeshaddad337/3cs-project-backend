@@ -51,7 +51,10 @@ if __name__ == "__main__":
             students = [
                 Student(name="haddad ilyes", class_id=c1.id),
                 Student(name="omri ilyes", class_id=c1.id),
-                Student(name="fendi mohammed", class_id=c2.id),
+                Student(name="fendi mohammed", class_id=c1.id),
+                Student(name="dine issam", class_id=c2.id),
+                Student(name="faressi madani", class_id=c2.id),
+                Student(name="bouhenni othmane", class_id=c2.id),
             ]
             db.session.add_all(students)
             db.session.commit()
