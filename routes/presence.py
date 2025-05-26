@@ -13,7 +13,7 @@ import json
 
 
 @api.route("/presence/<int:class_id>", methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def handle_presence(class_id):
     t = Task(result="")
     db.session.add(t)
@@ -27,7 +27,7 @@ def handle_presence(class_id):
     }), 202
 
 @api.route("/presence/status/<task_id>", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def check_status(task_id):
     task_result = Task.query.filter_by(id=task_id).first()
     if (not task_result):
@@ -40,7 +40,7 @@ def check_status(task_id):
     elif task_result.status == 'FINISHED':
         return jsonify({
             "status": "done",
-            "result": task_result.result
+            "result": json.loads(task_result.result)
         }), 200
     
 
@@ -68,10 +68,7 @@ def process_presence(class_id, task_id):
             # treat the names 
             results = [(name.split("_")[0] + " "+ name.split("_")[1] if len(name.split("_"))==2 else name) for name in results] 
             results = list(set(results))   
-            t.result = json.dumps({
-                "class_id": class_id,
-                "results": results,
-            })
+            t.result = json.dumps(results)
             t.status = "FINISHED"
             db.session.commit()
             # Save results to DB or return directly
