@@ -39,12 +39,12 @@ if __name__ == "__main__":
         from models import User, Classe, Student
 
         if not User.query.first():
-            prof = User(username="a.rahmoune@esi-sba.dz",name="Rahmoume", password=generate_password_hash("password"))
+            prof = User(username="a.rahmoune@esi-sba.dz",name="Rahmoune", password=generate_password_hash("password"))
             db.session.add(prof)
             db.session.commit()
 
-            c1 = Classe(name="Systeme Embarque", group="G01", totalStudents=20, professor_id=prof.id)
-            c2 = Classe(name="Systeme Embarque", group="G02", totalStudents=20, professor_id=prof.id)
+            c1 = Classe(name="ISI", group="G01", totalStudents=20, professor_id=prof.id)
+            c2 = Classe(name="ISI", group="G02", totalStudents=20, professor_id=prof.id)
             db.session.add_all([c1, c2])
             db.session.commit()
 

@@ -8,7 +8,7 @@ from models import Classe, Student
 def get_classes():
     user_id = int(get_jwt_identity())
     classes = Classe.query.filter_by(professor_id=user_id).all()
-    return jsonify([{"id": c.id, "name": c.name} for c in classes])
+    return jsonify([{"id": c.id, "name": c.name, "group": c.group, "totalStudents":c.totalStudents} for c in classes])
 
 @api.route("/students", methods=["GET"])
 @jwt_required()
