@@ -39,7 +39,7 @@ if __name__ == "__main__":
         from models import User, Classe, Student
 
         if not User.query.first():
-            prof = User(username="prof1", password=generate_password_hash("password"))
+            prof = User(username="rahmoune", password=generate_password_hash("password"))
             db.session.add(prof)
             db.session.commit()
 
