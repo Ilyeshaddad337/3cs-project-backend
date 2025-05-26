@@ -65,6 +65,9 @@ def process_presence(class_id, task_id):
 
             # Run face detection
             results = detector.detect_faces(image_path)
+            # treat the names 
+            results = [(name.split("_")[0] + " "+ name.split("_")[1] if len(name.split("_"))==2 else name) for name in results] 
+            results = list(set(results))   
             t.result = json.dumps({
                 "class_id": class_id,
                 "results": results,

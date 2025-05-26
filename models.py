@@ -9,6 +9,7 @@ db = SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
     classes = db.relationship("Classe", backref="professor", lazy=True)
@@ -16,8 +17,9 @@ class User(db.Model):
 class Classe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    group = db.Column(db.Integer, nullable=False)  
     professor_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
+    totalStudents = db.Column(db.Integer, default=0)
     students = db.relationship("Student", backref="class_ref", lazy=True)
 
 class Student(db.Model):
