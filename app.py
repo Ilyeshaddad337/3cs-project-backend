@@ -43,14 +43,20 @@ if __name__ == "__main__":
             db.session.add(prof)
             db.session.commit()
 
-            c1 = Classe(name="ISI", group="G01", totalStudents=20, professor_id=prof.id)
-            c2 = Classe(name="ISI", group="G02", totalStudents=20, professor_id=prof.id)
+            c1 = Classe(name="ISI", group="G01", totalStudents=9, professor_id=prof.id)
+            c2 = Classe(name="ISI", group="G02", totalStudents=3, professor_id=prof.id)
             db.session.add_all([c1, c2])
             db.session.commit()
 
             students = [
                 Student(name="haddad ilyes", class_id=c1.id),
                 Student(name="gnina ilyes", class_id=c1.id),
+                Student(name="hako djerad", class_id=c1.id),
+                Student(name="merzouka ala", class_id=c1.id),
+                Student(name="benaouda tarek", class_id=c1.id),
+                Student(name="cherak houssam", class_id=c1.id),
+                Student(name="bahri mohammed el amine", class_id=c1.id),
+                Student(name="salmi oussama", class_id=c1.id),
                 Student(name="fendi mohammed", class_id=c1.id),
                 Student(name="dine issam", class_id=c2.id),
                 Student(name="faressi madani", class_id=c2.id),
