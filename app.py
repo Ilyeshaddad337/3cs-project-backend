@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 Student(name="haddad ilyes", class_id=c1.id),
                 Student(name="gnina ilyes", class_id=c1.id),
                 Student(name="omri ilyes", class_id=c1.id),
-                Student(name="hako djerad", class_id=c1.id),
+                Student(name="abdou omar", class_id=c1.id),
                 Student(name="merzouka ala", class_id=c1.id),
                 Student(name="benaouda tarek", class_id=c1.id),
                 Student(name="cherak houssam", class_id=c1.id),
