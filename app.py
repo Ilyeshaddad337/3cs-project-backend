@@ -51,6 +51,7 @@ if __name__ == "__main__":
             students = [
                 Student(name="haddad ilyes", class_id=c1.id),
                 Student(name="gnina ilyes", class_id=c1.id),
+                Student(name="omri ilyes", class_id=c1.id),
                 Student(name="hako djerad", class_id=c1.id),
                 Student(name="merzouka ala", class_id=c1.id),
                 Student(name="benaouda tarek", class_id=c1.id),

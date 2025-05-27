@@ -1,11 +1,9 @@
-from flask import Flask, Response, send_file
+from flask import Flask, Response, send_file, redirect
 from picamera2 import Picamera2
 from datetime import datetime
 import cv2
-import threading
 import os
 import time
-import paramiko
 
 app = Flask(__name__)
 
@@ -36,16 +34,7 @@ def generate_frames():
 
 @app.route('/')
 def index():
-    return '''
-    <html>
-    <head><title>Raspberry Pi Camera Stream</title></head>
-    <body>
-        <h1>Live Stream</h1>
-        <img src="/video_feed" width="640" height="480" />
-        <p><a href="/capture">? Capture High-Res Class Photo</a></p>
-    </body>
-    </html>
-    '''
+    return redirect('/capture')
 
 @app.route('/video_feed')
 def video_feed():
@@ -54,10 +43,8 @@ def video_feed():
 @app.route('/capture')
 def capture():
     try:
-        # Stop the camera before changing config
         picam2.stop()
 
-        # Configure for still photo capture
         config = picam2.create_still_configuration()
         picam2.configure(config)
         picam2.start()
@@ -67,20 +54,10 @@ def capture():
         original_path = os.path.join(ORIGINAL_DIR, f"class_original_{timestamp}.jpg")
         picam2.capture_file(original_path)
 
-        # Stop and reconfigure for streaming again
         picam2.stop()
         picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
         picam2.start()
 
-        #success = send_photo_sftp(
-        #     local_path=original_path,
-        #     remote_ip=LINUX_MACHINE_IP,
-        #     remote_user=LINUX_USERNAME,
-        #     remote_password=LINUX_PASSWORD,
-        #     remote_path=LINUX_DESTINATION_PATH
-        # )
-
-        # return f"? Photo captured and sent: {success}<br><a href='/'>Back to Stream</a>"
         return send_file(original_path, mimetype='image/jpeg')
     
     
@@ -88,21 +65,6 @@ def capture():
         return f"? Error: {e}<br><a href='/'>Back to Stream</a>"
 
 
-def send_photo_sftp(local_path, remote_ip, remote_user, remote_password, remote_path):
-    try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(remote_ip, username=remote_user, password=remote_password)
-        sftp = ssh.open_sftp()
-        filename = os.path.basename(local_path)
-        remote_file_path = os.path.join(remote_path, filename)
-        sftp.put(local_path, remote_file_path)
-        sftp.close()
-        ssh.close()
-        return True
-    except Exception as e:
-        print(f"SFTP Error: {e}")
-        return False
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
