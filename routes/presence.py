@@ -5,9 +5,10 @@ from models import Task, db
 from app import app
 from . import api
 import threading
+import uuid
 from model.detector import FaceDetector
-from config import KNOWN_STUDENTS_DIR, TEST_IMG_PATH
-# import requests
+from config import KNOWN_STUDENTS_DIR, TEST_IMG_PATH, HARDWARE_IP, OUTPUT_FOLDER
+import requests
 import os
 import json
 
@@ -48,7 +49,6 @@ def check_status(task_id):
 
 
 def process_presence(class_id, task_id):            
-    print("hello")
     with app.app_context():
         if (not task_id):
             return
@@ -58,13 +58,29 @@ def process_presence(class_id, task_id):
         
         try:
             print(f"Detecting the faces for : {class_id}")
-            # response = requests.get("http://CAMERA_API/capture")
-            # image_path = save_image(response.content)  # save locally
-            image_path = TEST_IMG_PATH
+            response = requests.get(HARDWARE_IP+"/capture")
+            rnd_name = str(uuid.uuid4())
+            if response.status_code == 200:
+                rnd_name = str(uuid.uuid4())
+                
+                with open(os.path.join(OUTPUT_FOLDER,rnd_name+'.jpg'), 'wb') as f:
+                    f.write(response.content)
+                print(f"Image saved successfully as '{rnd_name}.jpg'")
+            else:
+                print(f"Failed to retrieve image. Status code: {response.status_code}")
+                t.status = "FAILED"
+                t.result = json.dumps({
+                    "error": "Failed to retrieve image from hardware."
+                })
+                db.session.commit()
+                return
+
+            # # image_path = save_image(response.content)  # save locally
+            # image_path = TEST_IMG_PATH
             detector = FaceDetector(KNOWN_STUDENTS_DIR)
 
             # Run face detection
-            results = detector.detect_faces(image_path)
+            results = detector.detect_faces(os.path.join(OUTPUT_FOLDER,rnd_name+'.jpg'))
             # treat the names 
             results = [(name.split("_")[0] + " "+ name.split("_")[1] if len(name.split("_"))==2 else name) for name in results] 
             results = list(set(results))   
